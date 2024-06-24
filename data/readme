@@ -1,3 +1,26 @@
 # Step 1. Labeling image by ---> https://makesense.ai
 # Step 2. Edit Makefile and yolov4-custom.cfg.
 # Step 3. Copy your images and labeling file in Step 1 into "data" folder then zip it
+
+
+####Edit yolov4-custom.cfg####
+First, you need to determine how many classes you are going to train. This is essentially the number of object types. For example, if you are only training for fire, it is 1 class; if you are training for both fire and water, it is 2 classes.
+
+Go to line 20 and modify max_batches to max(<number of classes>*2000, 6000). This means if <number of classes>*2000 is less than 6000, then use 6000, otherwise use the calculated value. Here, we use 6000 because 1*2000 < 6000. Therefore, set max_batches=6000.
+
+Go to line 22 and change it to steps=80%, 90% of max_batches. For example, in this case, it is steps=4800,5400.
+
+Replace all lines containing classes=80 with classes=<number of classes>. For instance, in this example, change it to classes=1. You can use Find/Search and Replace for quick edits, otherwise, the lines are located at 970, 1058, and 1146.
+
+Replace all lines containing filters=255 with filters=<(number of classes+5)*3>. For example, with 1 class, it will be (1+5)*3 = 18, so change it to filters=18. As above, you can use Search and Replace, or manually edit lines 963, 1051, and 1139 if you prefer.
+
+If you encounter out-of-memory issues, change subdivisions (line 7) to 32 (or 64) or reduce the image size to width=416, height=416 (lines 8 and 9).
+
+Once done, save the file as yolov4-custom.cfg. Save it in the same location as the data.zip file from above. Get ready!
+
+####Edit Makefile####
+Now, download the Makefile from this Git!. Open it and make the following changes:
+
+On line 1, change it to GPU=1.
+On line 2, change it to CUDNN=1.
+On line 4, change it to OPENCV=1.
